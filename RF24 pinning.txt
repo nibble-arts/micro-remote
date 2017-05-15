@@ -1,0 +1,16 @@
+Line From Arduino Pin To nRF24
+
+signal   arduino   RF24
+ GND      GND       1
+ 3V3      3V3       2
+ CE       7*        3
+ CSN      8*        4
+ SCK      SCK       5
+ MOSI     MOSI      6
+ MISO     MISO      7
+
+* selected in RF24 library
+
+Due to a different design of the Micro boards you have to use the MOSI and MOSO pins of the ICSP connector instead of the normal pins.
+
+ICSP it is a AVRtiny programming header for the Arduino consisting of MOSI, MISO, SCK, RESET, VCC, GND. 

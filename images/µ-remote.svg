@@ -14,8 +14,11 @@
    viewBox="0 0 1488.189 1052.3622"
    id="svg4140"
    version="1.1"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="µ-remote.svg">
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="µ-remote.svg"
+   inkscape:export-filename="/home/tom/Dokumente/Entwicklung/Arduino/microRemote/images/µ-remote.png"
+   inkscape:export-xdpi="200"
+   inkscape:export-ydpi="200">
   <defs
      id="defs4142" />
   <sodipodi:namedview
@@ -25,15 +28,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="831.03987"
-     inkscape:cy="532.71477"
+     inkscape:zoom="0.35"
+     inkscape:cx="1057.8829"
+     inkscape:cy="471.16001"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:snap-text-baseline="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1149"
+     inkscape:window-width="1440"
+     inkscape:window-height="848"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1" />
@@ -56,26 +59,31 @@
      transform="translate(0,-1.6535434e-6)">
     <text
        xml:space="preserve"
-       style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:condensed;font-size:40px;line-height:1000%;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Light Italic Condensed';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="427.92896"
-       y="567.505"
+       style="font-size:72.22081757px;font-style:italic;font-variant:normal;font-weight:300;font-stretch:condensed;line-height:1000%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Open Sans;-inkscape-font-specification:Open Sans Light Italic Condensed"
+       x="179.53487"
+       y="653.92328"
        id="text4688"
-       sodipodi:linespacing="1000%"><tspan
+       sodipodi:linespacing="1000%"
+       inkscape:export-filename="/home/tom/Dokumente/Entwicklung/Arduino/microRemote/images/text4692.png"
+       inkscape:export-xdpi="199.96632"
+       inkscape:export-ydpi="199.96632"><tspan
          sodipodi:role="line"
          id="tspan4690"
-         x="427.92896"
-         y="567.505"
-         style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:condensed;font-size:147.5px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Light Italic Condensed';writing-mode:lr">µ</tspan></text>
+         x="179.53487"
+         y="653.92328"
+         style="font-size:361.10406494px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;writing-mode:lr-tb;fill:#ff6600;font-family:Alexander;-inkscape-font-specification:Alexander">µ</tspan></text>
     <text
        sodipodi:linespacing="1000%"
        id="text4692"
-       y="567.36212"
-       x="496.60712"
-       style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:condensed;font-size:40px;line-height:1000%;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Light Italic Condensed';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:condensed;font-size:250px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Light Condensed'"
-         y="567.36212"
-         x="496.60712"
+       y="647.99091"
+       x="379.48523"
+       style="font-size:72.22081757px;font-style:italic;font-variant:normal;font-weight:300;font-stretch:condensed;line-height:1000%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Open Sans;-inkscape-font-specification:Open Sans Light Italic Condensed"
+       xml:space="preserve"
+       inkscape:export-xdpi="199.96632"
+       inkscape:export-ydpi="199.96632"><tspan
+         style="font-size:451.38009644px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:condensed;letter-spacing:-20px;font-family:Open Sans;-inkscape-font-specification:Open Sans Light Condensed"
+         y="647.99091"
+         x="379.48523"
          id="tspan4694"
          sodipodi:role="line">remote</tspan></text>
   </g>

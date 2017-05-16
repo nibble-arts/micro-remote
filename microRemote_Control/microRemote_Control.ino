@@ -32,17 +32,6 @@ RF24 radio(9,8);
 
 byte addresses[][6] = {"1Node","2Node"};
 
-struct DATA {
-  int rec;
-  int focus;
-  int iris;
-  int zoom;
-  int audio;
-  int iso;
-  int sector;
-  int color;
-  unsigned long time;
-};
 
 /***************************************************
  * S-Bus definitions
@@ -58,11 +47,11 @@ struct DATA {
 #define COLORchannel 7
 #define AUDIOchannel 8
 
-const int sbusMID         = 1024;   //neutral val
-const int sbusLOW         = 0;      //low switch val
-const int sbusHIGH        = 2000;   //high switch val
+#define sbusMID 1024   //neutral val
+#define sbusLOW 0      //low switch val
+#define sbusHIGH 2000   //high switch val
 
-const int sbusWAIT = 4;      //frame timing delay in msecs
+#define sbusWAIT 4      //frame timing delay in msecs
 
 BMC_SBUS mySBUS;
 
@@ -75,10 +64,6 @@ BMC_SBUS mySBUS;
 
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
-
-#if (SSD1306_LCDHEIGHT != 64)
-#error("Height incorrect, please fix Adafruit_SSD1306.h!");
-#endif
 
 
 
@@ -126,6 +111,8 @@ Adafruit_SSD1306 display(OLED_RESET);
  * wheel delta value
  */
 int delta;
+double wheelTime;
+byte wheelSpeed;
 
 
 
@@ -302,16 +289,16 @@ const unsigned char PROGMEM color_48 [] = {
  *    2: RF connected
   */
 bool mode = false;
-int select = 0;
+byte select = 0;
 bool edit = false;
-int record = false;
-int rf = false;
+bool record = false;
+bool rf = false;
 
-int stat;
-int store;
+byte stat;
+byte store;
 
-int lastMode = mode;
-int lastSelect = select;
+byte lastMode = mode;
+byte lastSelect = select;
 
 #define SELMODE 0
 #define VALMODE 1
@@ -335,8 +322,8 @@ int lastSelect = select;
  */
 int nr[4]; // saved values for the analog parameters
 int save[4][3]; // saved values
-int current;
-int menuCount;
+byte current;
+byte menuCount;
 String menuItems[7];
 
 
@@ -389,7 +376,7 @@ void setup()   {
   /* init stati */
   mode = false; // select mode
   select = 0; // selected value
-  record = 0; // recording stopped
+  record = false; // recording stopped
   rf = 0; // 0 = no RF, 1 = RF but no signal, 2 = RF connected
   current = 1; // current save position
 
@@ -434,16 +421,9 @@ void setup()   {
   // Start the radio listening for data
   radio.startListening();
 
-  
-  if (!cable()) {
-
-    rf = 1;
-  }
 
   /* init S-BUS */
-  else {
-    mySBUS.begin();
-  }
+  mySBUS.begin();
 
 
   /* start on select screen */
@@ -557,6 +537,14 @@ void loop() {
     }
 
     checkWheel();
+
+/*    if (wheelSpeed) {
+      display.fillRect(10,0,100,20,BLACK);
+      display.setCursor(10,0);
+      display.print(wheelSpeed);
+      display.display();
+    }*/
+    
   }
 
 
@@ -607,7 +595,7 @@ int checkButton() {
 }
 
 
-void checkWheel() {
+void checkWheel(void) {
 
   if (delta != 0) {
 
@@ -637,10 +625,13 @@ bool analog() {
 /**********************************************************
  * 
  */
-void wheel_interrupt() {
+void wheel_interrupt(void) {
 
   int a = digitalRead(STEP);
   int b = digitalRead(DIR);
+
+  wheelSpeed = millis()-wheelTime;
+  wheelTime = millis();
 
   /* CW */
   if ((a && !b) || (!a && b)) {
@@ -729,7 +720,7 @@ int connected (void) {
 int cable(void) {
 
 /* DEBUG */
-  return (true);
+//  return (true);
   return (!digitalRead(CABLE));
 }
 
@@ -755,7 +746,7 @@ void set_select() {
   
   edit = false;
   mode = false;
-  record = 0;
+  record = false;
 
   save_EEPROM();
 
@@ -789,23 +780,33 @@ void set_value() {
   
   edit = false;
   mode = true;
-  record = 0;
+  record = false;
 
   save_EEPROM();
 
   update_screen();
 }
 
-void inc_value() {
-  if (value[select] < 100)
+void inc_value(void) {
+//  if (wheelSpeed > 10)
+//    value[select] += 10;
+//  else
     value[select]++;
+  
+  if (value[select] > 100)
+    value[select] = 100;
 
   draw_nav();
 }
 
 void dec_value() {
-  if (value[select] > 0)
+//  if (wheelSpeed > 10)
     value[select]--;
+//  else
+//    value[select] -= wheelSpeed;
+
+  if (value[select] < 0)
+    value[select] = 0;
 
   draw_nav();
 }
@@ -820,7 +821,7 @@ void dec_value() {
     
     edit = true;
     mode = false;
-    record = 1;
+    record = true;
 
     save_EEPROM();
   
@@ -839,7 +840,7 @@ void dec_value() {
     
     edit = true;
     mode = true;
-    record = 1;
+    record = true;
 
     save_EEPROM();
 
@@ -1048,7 +1049,7 @@ void set_record(void) {
   
   edit = false;
   mode = true;
-  record = 1;
+  record = true;
 
   value[7] = -1;
 
@@ -1360,7 +1361,7 @@ void draw_nr() {
 /***********************************************
  * draw RF symbol
  */
- void draw_rf() {
+ void draw_rf(void) {
   
   display.fillRect(96, 0, 30, 32, BLACK);
 
@@ -1456,6 +1457,9 @@ void transmit() {
   /* cable S_BUS transmisssion */
   if (cable()) {
 
+    newRf = 0;
+    radio.powerDown();
+
     /* analog channels */
     mySBUS.Servo(FOCUSchannel, map(value[0],0,100,0,2047)); /* focus */
     mySBUS.Servo(IRISchannel, map(value[1],0,100,0,2047)); /* iris */
@@ -1476,6 +1480,8 @@ void transmit() {
 
   /* RF transmission */
   else {
+
+    radio.powerUp();
     radio.stopListening();
   
     /* get send time for connection test */
@@ -1491,11 +1497,11 @@ void transmit() {
     else {
       newRf = 2;
     }
+  }
 
-    if (newRf != rf) {
-      rf = newRf;
-      update_screen();
-    }
+  if (newRf != rf) {
+    rf = newRf;
+    update_screen();
   }
 
   /* reset digital data */
@@ -1504,6 +1510,7 @@ void transmit() {
   value[6] = 0;
   value[7] = 0;
 
+  radio.startListening();
 }
 
 

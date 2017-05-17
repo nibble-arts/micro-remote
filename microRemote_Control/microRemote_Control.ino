@@ -113,6 +113,7 @@ Adafruit_SSD1306 display(OLED_RESET);
 int delta;
 double wheelTime;
 byte wheelSpeed;
+unsigned int wheelCnt;
 
 
 
@@ -439,7 +440,7 @@ void setup()   {
 /*************************************************************************************
  * main loop
  */
-void loop() {
+void loop(void) {
 
   int button;
   int wheel;
@@ -538,12 +539,13 @@ void loop() {
 
     checkWheel();
 
-/*    if (wheelSpeed) {
+/*
+//    if (wheelSpeed) {
       display.fillRect(10,0,100,20,BLACK);
       display.setCursor(10,0);
-      display.print(wheelSpeed);
+      display.print(wheelCnt);
       display.display();
-    }*/
+  //  }*/
     
   }
 
@@ -630,9 +632,6 @@ void wheel_interrupt(void) {
   int a = digitalRead(STEP);
   int b = digitalRead(DIR);
 
-  wheelSpeed = millis()-wheelTime;
-  wheelTime = millis();
-
   /* CW */
   if ((a && !b) || (!a && b)) {
     delta = 1;
@@ -643,6 +642,15 @@ void wheel_interrupt(void) {
     delta = -1;
   }
 
+  /* get speed */
+  if ((millis() - wheelTime) > 75) {
+    wheelSpeed = wheelCnt;
+    wheelCnt = 0;
+    wheelTime = millis();
+  }
+
+  if (wheelCnt < 16000)
+    wheelCnt++;
 }
 
 
@@ -788,9 +796,9 @@ void set_value() {
 }
 
 void inc_value(void) {
-//  if (wheelSpeed > 10)
-//    value[select] += 10;
-//  else
+  if (wheelSpeed > 10)
+    value[select] += 5;
+  else
     value[select]++;
   
   if (value[select] > 100)
@@ -800,10 +808,10 @@ void inc_value(void) {
 }
 
 void dec_value() {
-//  if (wheelSpeed > 10)
+  if (wheelSpeed > 10)
+    value[select] -= 5;
+  else
     value[select]--;
-//  else
-//    value[select] -= wheelSpeed;
 
   if (value[select] < 0)
     value[select] = 0;

@@ -293,7 +293,7 @@ bool mode = false;
 byte select = 0;
 bool edit = false;
 bool record = false;
-bool rf = false;
+byte rf = 0;
 
 byte stat;
 byte store;
@@ -539,14 +539,6 @@ void loop(void) {
 
     checkWheel();
 
-/*
-//    if (wheelSpeed) {
-      display.fillRect(10,0,100,20,BLACK);
-      display.setCursor(10,0);
-      display.print(wheelCnt);
-      display.display();
-  //  }*/
-    
   }
 
 
@@ -556,6 +548,12 @@ void loop(void) {
     transmit();
 
 //  oldValue = value[select];
+
+
+/*    display.fillRect(10,0,100,20,BLACK);
+    display.setCursor(10,0);
+    display.print(rf);
+    display.display();*/
 }
 
 
@@ -717,10 +715,12 @@ void decrement() {
  * connected via cable or rf
  */
 int connected (void) {
+
   if (cable() || rf == 2)
     return true;
   else
     return false;
+
 }
 
 
@@ -1506,7 +1506,7 @@ void transmit() {
       newRf = 2;
     }
   }
-
+  
   if (newRf != rf) {
     rf = newRf;
     update_screen();

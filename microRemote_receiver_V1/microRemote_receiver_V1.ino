@@ -18,12 +18,13 @@
 * A0 = battery voltage control
 * 
 * output
-* D2 = S-Bus
-* D3 = PWM servo Focus
-* D4 = PWM servo FStop
-* D5 = PWM servo Zoom
+* TX = S-Bus (inverted)
+* D6 = PWM servo Focus
+* D11 = PWM servo FStop
+* D10 = PWM servo Zoom
 *
-* D10 = connection status
+* D5 = connection status
+* D12 = record
 
 for RF24 pinning refer to the text file
 */
@@ -38,16 +39,16 @@ for RF24 pinning refer to the text file
 /*                            
  * PWM servo output
  */
-#define FOCUS 5
-#define FSTOP 6
-#define ZOOM 9
+#define FOCUS 6
+#define FSTOP 11
+#define ZOOM 10
 
 /* digital input switch to gnd */
 #define SW1 3
 
 /* digital LED output with 1k resistor to gnd */
-#define REC 4
-#define STATUS 10
+#define REC 12
+#define STATUS 5
 
 
 /***************************************************
@@ -75,7 +76,7 @@ BMC_SBUS mySBUS;
 
 
 /* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
-RF24 radio(8,7);
+RF24 radio(7,8);
 
 /* Servo definition */
 Servo FocusServo;
@@ -107,7 +108,7 @@ int value[8];
 /* setup routine                                          */
 void setup() {
 
-  Serial.begin(9600);
+  Serial1.begin(9600);
 
   /* init S-BUS */
   mySBUS.begin();
@@ -247,6 +248,7 @@ void transmit() {
   stepChannel(5,SECTORchannel);
   stepChannel(6,COLORchannel);
   stepChannel(7,RECchannel);
+
 
   /* reset digital data */
   value[4] = 0;

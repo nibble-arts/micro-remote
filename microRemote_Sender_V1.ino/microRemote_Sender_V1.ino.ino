@@ -90,6 +90,7 @@ bool blinkStatus = LOW;
 unsigned long noBlinkTime;
 bool noBlinkStatus = LOW;
 
+bool recStat;
 
 /* value array */
 int value[8];
@@ -149,6 +150,8 @@ void setup() {
   digitalWrite(STAT1, LOW);
   digitalWrite(STAT2, LOW);
   digitalWrite(STAT3, LOW);
+
+  recStat = false;
 
 }
 
@@ -362,8 +365,41 @@ void transmit(DATA data) {
   value[4] = 0;
   value[5] = 0;
   value[6] = 0;
-  value[7] = 0;
 
+  /* play */
+  if (data.sw1 and !recStat) {
+    recStat = true;
+    value[7] = 1;
+  }
+
+  /* stop */
+  if (!data.sw1 and recStat) {
+    recStat = false;
+    value[7] = -1;
+  }
+
+  if (!recStat) {
+/*    radio.startListening();
+
+    while (!radio.available()) {  
+      if (micros() - start_time > 10000) {
+//        digitalWrite(PWR, LOW);
+        break;
+      }
+    }
+    
+    if (radio.available()) {
+      float power;
+      radio.read( &power, sizeof(float) );
+
+      digitalWrite(PWR, HIGH);
+    }*/
+
+    digitalWrite(PWR, LOW);
+  }
+  else {
+    digitalWrite(PWR, HIGH);
+  }
 
   /* send data */
   if (!radio.write( &value, sizeof(int[8]) )){
@@ -395,30 +431,7 @@ void transmit(DATA data) {
   else
     digitalWrite(RADIO, HIGH);
 
-
-  if (!data.sw1) {
-    radio.startListening();
-
-    while (!radio.available()) {  
-      if (micros() - start_time > 10000) {
-//        digitalWrite(PWR, LOW);
-        break;
-      }
-    }
-    
-    if (radio.available()) {
-      float power;
-      radio.read( &power, sizeof(float) );
-
-      digitalWrite(PWR, HIGH);
-    }
-  }
-  else {
-    digitalWrite(PWR, LOW);
-  }
-
-
- 
+  value[7] = 0;
 }
 
 

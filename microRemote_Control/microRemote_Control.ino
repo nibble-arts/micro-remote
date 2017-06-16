@@ -368,7 +368,7 @@ void setup()   {
   
   display.setTextSize(1);
   display.setCursor(28,44);
-  display.print("version 1.0");
+  display.print("version 1.1");
 
   display.display();
 

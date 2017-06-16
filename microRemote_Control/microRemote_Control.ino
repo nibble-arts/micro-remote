@@ -78,6 +78,8 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define UPDOWN 2
 #define VALUE 3
 
+#define stepWait 100
+
 
 /***************************************************
  * button press type
@@ -426,6 +428,9 @@ void setup()   {
   /* init S-BUS */
   mySBUS.begin();
 
+  /* stop recording */
+  value[7] = -1;
+
 
   /* start on select screen */
   set_select();
@@ -452,6 +457,11 @@ void loop(void) {
 
 
   if (connected()) {
+
+  
+
+
+
 
 
 /***********************************************/
@@ -538,7 +548,6 @@ void loop(void) {
     }
 
     checkWheel();
-
   }
 
 
@@ -608,6 +617,7 @@ void checkWheel(void) {
 
     delta = 0;
   }
+
 }
 
 
@@ -677,8 +687,10 @@ void increment() {
       inc_value();
 
     /* digital */
-    else
+    else {
       value[select] = 1;
+      delay (stepWait);
+    }
   }
 }
 
@@ -705,8 +717,10 @@ void decrement() {
     /* analog */
     if (analog())
       dec_value();
-    else
+    else {
       value[select] = -1;
+      delay (stepWait);
+    }
   }
 }
 
@@ -1512,12 +1526,6 @@ void transmit() {
     update_screen();
   }
 
-  /* reset digital data */
-  value[4] = 0;
-  value[5] = 0;
-  value[6] = 0;
-  value[7] = 0;
-
   radio.startListening();
 }
 
@@ -1554,7 +1562,16 @@ void stepChannel (int val, int channel) {
       mySBUS.Send();
     }
 
-    delay(500);
+    delay(sbusWAIT);
+
+    mySBUS.Servo(channel, sbusMID);
+    mySBUS.Update();
+    mySBUS.Send();
+
+    /* reset digital data */
+    value[val] = 0;
+
+    delay(200);
   }
 }
 
